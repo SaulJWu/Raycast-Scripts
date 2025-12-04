@@ -27,6 +27,33 @@
 $100 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le queda $80 en divisas
 ```
 
+### ReverseCalculatePrice.applescript
+
+**功能**：反向计算价格并自动粘贴文本
+
+**用途**：
+- 输入折扣后的价格（USD）
+- 自动反推原始价格（折扣价 ÷ 0.8）
+- 如果原始价格有小数，自动向下取整
+- 生成格式化的文本并自动粘贴到当前焦点位置
+
+**快捷键**：`Control + Option + R`
+
+**使用流程**：
+1. 按下快捷键或通过 Raycast 运行脚本
+2. 在弹出的对话框中输入折扣后的价格（例如：8）
+3. 脚本自动反推原始价格（例如：8 ÷ 0.8 = 10）并粘贴格式化文本
+
+**输出格式示例**：
+```
+$10 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le queda $8 en divisas
+```
+
+**计算逻辑**：
+- 输入：折扣后价格（如 8）
+- 计算：原始价格 = 折扣后价格 ÷ 0.8 = 8 ÷ 0.8 = 10
+- 取整：如果原始价格有小数，向下取整（如 10.9 → 10）
+
 ## 如何查看 Raycast 脚本日志
 
 ### 方法一：通过 Raycast 界面查看
@@ -130,11 +157,15 @@ osascript CalculateAndPastePrice.applescript
 ### 测试脚本
 
 ```bash
-# 在终端中直接运行
+# 测试正向计算脚本
 osascript CalculateAndPastePrice.applescript
+
+# 测试反向计算脚本
+osascript ReverseCalculatePrice.applescript
 
 # 或者使用 osascript 的调试模式
 osascript -l AppleScript CalculateAndPastePrice.applescript
+osascript -l AppleScript ReverseCalculatePrice.applescript
 ```
 
 ### 修改脚本后的操作
@@ -146,6 +177,14 @@ osascript -l AppleScript CalculateAndPastePrice.applescript
 ## 更新日志
 
 ### 2024-12-XX（最新）
+- **新增反向计算脚本 ReverseCalculatePrice.applescript**：
+  - 输入折扣后的价格，自动反推原始价格
+  - 计算公式：原始价格 = 折扣后价格 ÷ 0.8
+  - 如果原始价格有小数，自动向下取整
+  - 快捷键：`Control + Option + R`
+  - 生成格式化的文本并自动粘贴
+
+### 2024-12-XX
 - **修复了计算结果无法自动粘贴到输入框的问题**：
   - 改进了粘贴逻辑，在显示对话框前保存当前活动应用
   - 对话框关闭后自动重新激活原来的应用，确保焦点正确
