@@ -22,47 +22,46 @@ on run
 	set templateNames to templateNames of templateData
 	set templateContents to templateContents of templateData
 	
-	-- 构建模板选择提示文本，清晰显示每个模板的标题
-	set promptText to "═══════════════════════════════════" & return
-	set promptText to promptText & "   快速回复模板选择" & return
-	set promptText to promptText & "═══════════════════════════════════" & return & return
-	set promptText to promptText & "请选择要使用的回复模板：" & return & return
-	
+	-- 显示模板列表提示
+	set promptText to "请选择模板（输入数字 1-" & (count of templateNames) & " 后按回车）：" & return & return
 	repeat with i from 1 to count of templateNames
-		set promptText to promptText & "  " & i & ". " & (item i of templateNames) & return
+		set promptText to promptText & i & ". " & (item i of templateNames) & return
 	end repeat
 	
-	set promptText to promptText & return & "═══════════════════════════════════" & return
-	set promptText to promptText & "请输入数字 (1-" & (count of templateNames) & ") 选择模板："
-	
-	-- 让用户输入数字选择模板
+	-- 使用 display dialog，用户输入数字后按回车
+	-- 注意：由于 macOS 系统限制，标准的对话框都需要某种形式的确认
+	-- 我们使用 display dialog，用户输入数字后按回车（回车是默认按钮）
 	try
-		set userInput to text returned of (display dialog promptText default answer "" buttons {"取消", "确定"} default button "确定" with title "快速回复模板选择")
+		set userInput to text returned of (display dialog promptText default answer "" buttons {"取消", "确定"} default button "确定" with title "快速回复模板")
 		
 		-- 验证输入不为空
 		if userInput is "" then
-			display notification "请输入数字 1-" & (count of templateNames) & " 来选择模板。" with title "快速回复"
 			return
 		end if
 		
-		-- 简单处理：直接使用用户输入的文本转换为数字（如果包含空格会自动报错提示）
-		set userInput to userInput
-		set selectedIndex to userInput as number
+		-- 提取数字
+		set userInput to my trim(userInput)
+		try
+			set selectedIndex to userInput as number
+		on error
+			return
+		end try
 		
-		-- 验证数字范围
+		-- 验证索引范围
 		if selectedIndex < 1 or selectedIndex > (count of templateNames) then
-			display notification "请输入 1 到 " & (count of templateNames) & " 之间的数字。" with title "快速回复"
 			return
 		end if
+		
+		-- 获取选中的模板名称
+		set selectedName to item selectedIndex of templateNames
 		
 	on error number -128
 		-- 用户点击了"取消"
 		return
 	end try
 	
-	-- 获取选中的模板内容和名称
+	-- 获取选中的模板内容
 	set selectedContent to item selectedIndex of templateContents
-	set selectedName to item selectedIndex of templateNames
 	
 	-- 将选中的模板内容复制到剪贴板
 	set the clipboard to selectedContent
@@ -168,3 +167,11 @@ on loadAllTemplates()
 	
 	return {templateNames:templateNames, templateContents:templateContents}
 end loadAllTemplates
+
+-- 辅助函数：去除字符串两端的空格
+on trim(inputString)
+	set AppleScript's text item delimiters to {" "}
+	set textItems to text items of inputString
+	set AppleScript's text item delimiters to ""
+	return textItems as string
+end trim
