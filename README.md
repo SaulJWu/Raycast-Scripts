@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-这是一个用于 Raycast 的 AppleScript 脚本集合，主要用于价格计算和自动化操作。
+这是一个用于 Raycast 的 AppleScript 脚本集合，主要用于价格计算、快速回复模板和自动化操作。
 
 ## 脚本说明
 
@@ -57,6 +57,45 @@ $10 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le que
 - 输入：折扣后价格（如 8）
 - 计算：原始价格 = 折扣后价格 ÷ 0.8 = 8 ÷ 0.8 = 10
 - 取整：如果原始价格有小数，向下取整（如 10.9 → 10）
+
+### QuickReplyTemplates.applescript
+
+**功能**：快速回复模板选择器，支持数字选择模板并自动粘贴
+
+**用途**：
+- 预定义常用回复模板（支持 Emoji 和自定义内容）
+- 通过输入数字 1-6 快速选择模板
+- 自动将选中的模板内容复制并粘贴到当前焦点位置
+
+**使用方式**：
+- 在 Raycast 中配置快捷键后使用（默认快捷键：`Control + Option + R`）
+- 或直接在 Raycast 中搜索脚本名称运行
+
+**使用流程**：
+1. 通过 Raycast 运行脚本（使用配置的快捷键或搜索脚本名称）
+2. 在弹出的对话框中查看所有可用模板
+3. 输入数字 1-6 选择对应的模板
+4. 脚本自动将模板内容复制并粘贴到当前焦点位置
+
+**模板说明**：
+- 脚本内置 6 个常用回复模板
+- 每个模板都支持 Emoji 表情符号
+- 模板内容完全可自定义（直接编辑脚本中的 `templates` 列表）
+- 模板名称支持 Emoji，方便识别
+
+**自定义模板方法**：
+1. 打开 `QuickReplyTemplates.applescript` 文件
+2. 找到 `set templates to {` 部分
+3. 修改或添加模板，格式为：`{name:"模板名称", content:"模板内容"}`
+4. 保存文件并在 Raycast 中重新加载脚本
+
+**模板示例**：
+- 1️⃣ TIENDA MOTO ELITE CATIA：店铺信息模板
+- 2️⃣ 问候模板：包含问候语和 Emoji
+- 3️⃣ 感谢模板：感谢客户支持
+- 4️⃣ 确认模板：确认收到信息
+- 5️⃣ 结束对话模板：礼貌结束对话
+- 6️⃣ 自定义模板：示例自定义模板
 
 ## 如何配置快捷键
 
@@ -181,9 +220,13 @@ osascript CalculateAndPastePrice.applescript
 # 测试反向计算脚本
 osascript ReverseCalculatePrice.applescript
 
+# 测试快速回复模板脚本
+osascript QuickReplyTemplates.applescript
+
 # 或者使用 osascript 的调试模式
 osascript -l AppleScript CalculateAndPastePrice.applescript
 osascript -l AppleScript ReverseCalculatePrice.applescript
+osascript -l AppleScript QuickReplyTemplates.applescript
 ```
 
 ### 修改脚本后的操作
@@ -195,6 +238,15 @@ osascript -l AppleScript ReverseCalculatePrice.applescript
 ## 更新日志
 
 ### 2024-12-XX（最新）
+- **更新 QuickReplyTemplates.applescript**：
+  - 修改选择方式：从列表选择改为数字输入（1-6）
+  - 添加对话框显示所有可用模板
+  - 支持 Emoji 表情符号和自定义内容
+  - 内置 6 个常用回复模板示例
+  - 改进焦点恢复机制，确保粘贴操作成功
+  - 添加完善的输入验证和错误处理
+
+### 2024-12-XX
 - **更新 README 说明**：
   - 明确说明快捷键在 Raycast 中配置，脚本本身不包含快捷键
   - 添加了快捷键配置说明章节
@@ -220,4 +272,6 @@ osascript -l AppleScript ReverseCalculatePrice.applescript
 2. 脚本需要辅助功能权限才能模拟键盘操作
 3. 输入价格时只输入数字，不要包含其他字符
 4. 脚本会在当前焦点位置粘贴文本，使用前请确保目标应用已获得焦点
+5. QuickReplyTemplates 脚本支持 Emoji，可以直接在模板内容中使用任何 Emoji 表情
+6. 自定义模板时，注意保持 AppleScript 语法正确，字符串中的引号需要转义或使用不同的引号类型
 
