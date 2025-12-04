@@ -17,18 +17,10 @@ on run
 		end tell
 	end try
 	
-	-- 定义模板标题列表（用于对话框展示）
-	set templateNames to {"1️⃣ TIENDA MOTO ELITE CATIA", "2️⃣ 问候模板", "3️⃣ 感谢模板", "4️⃣ 确认模板", "5️⃣ 结束对话模板", "6️⃣ 自定义模板"}
-	
-	-- 定义每个模板的具体内容（支持 Emoji 和换行）
-	set template1 to "TIENDA MOTO ELITE CATIA" & return & return & "Horario:" & return & return & "Dia: Lunes a Sabado" & return & return & "Hora: 8:30am a 5:30 pm" & return & return & "Whatsapp: 04242838297" & return & return & "Dirección: A 2 Cuadras de la Estación del Metro Pérez Bonalde, Calle México de Catia, Frente al Colegio Juan Antonio Pérez Bonalde" & return & return & "https://maps.app.goo.gl/Mto6487FwnZkyA8y5?g_st=ic"
-	set template2 to "👋 您好！" & return & return & "感谢您的咨询，很高兴为您服务。" & return & return & "有什么我可以帮助您的吗？"
-	set template3 to "🙏 非常感谢您的支持！" & return & return & "我们会尽快处理您的问题。" & return & return & "如有任何疑问，请随时联系我们。"
-	set template4 to "✅ 已收到您的信息" & return & return & "我们会尽快为您处理。" & return & return & "感谢您的耐心等待！"
-	set template5 to "感谢您的咨询！😊" & return & return & "如果还有其他问题，随时欢迎联系我们。" & return & return & "祝您生活愉快！"
-	set template6 to "💬 这是一个自定义模板" & return & return & "您可以在这里添加任何内容，包括：" & return & "- 文本" & return & "- Emoji 表情 😀 🎉 ✨" & return & "- 链接和联系方式" & return & return & "完全支持自定义！"
-	
-	set templateContents to {template1, template2, template3, template4, template5, template6}
+	-- 从 templates 子目录加载所有模板
+	set templateData to my loadAllTemplates()
+	set templateNames to templateNames of templateData
+	set templateContents to templateContents of templateData
 	
 	-- 构建模板选择提示文本，清晰显示每个模板的标题
 	set promptText to "═══════════════════════════════════" & return
@@ -49,7 +41,7 @@ on run
 		
 		-- 验证输入不为空
 		if userInput is "" then
-			display notification "请输入数字 1-6 来选择模板。" with title "快速回复"
+			display notification "请输入数字 1-" & (count of templateNames) & " 来选择模板。" with title "快速回复"
 			return
 		end if
 		
@@ -101,4 +93,78 @@ on run
 	end try
 end run
 
--- 下面本来预留了辅助函数位置，目前逻辑已经足够简单，不需要额外函数
+-- 辅助函数：从 templates 子目录加载所有模板
+-- 返回：包含 templateNames 和 templateContents 的记录
+on loadAllTemplates()
+	-- 获取脚本所在目录的 POSIX 路径
+	try
+		set scriptPath to path to me
+		set scriptFolder to (POSIX path of (scriptPath as alias))
+		-- 提取目录路径（去掉文件名）
+		set scriptFolder to (do shell script "dirname " & quoted form of scriptFolder)
+	on error
+		-- 如果获取失败，使用当前工作目录
+		set scriptFolder to (do shell script "pwd")
+	end try
+	
+	-- templates 子目录路径
+	set templatesFolder to scriptFolder & "templates/"
+	
+	set templateNames to {}
+	set templateContents to {}
+	
+	-- 尝试扫描 templates 目录中的所有 .txt 文件
+	try
+		-- 获取所有 .txt 文件
+		set templateFiles to paragraphs of (do shell script "ls -1 " & quoted form of templatesFolder & "*.txt 2>/dev/null | sort")
+		
+		repeat with templateFile in templateFiles
+			if templateFile is not "" then
+				-- 提取文件名（去掉路径和扩展名）
+				set fileName to templateFile
+				set AppleScript's text item delimiters to "/"
+				set fileNameParts to text items of fileName
+				set fileName to last item of fileNameParts
+				set AppleScript's text item delimiters to "."
+				set fileNameParts to text items of fileName
+				set templateName to first item of fileNameParts
+				set AppleScript's text item delimiters to ""
+				
+				-- 读取文件内容
+				try
+					set fileContent to (read POSIX file templateFile)
+					if fileContent is not "" then
+						set end of templateNames to templateName
+						set end of templateContents to fileContent
+					end if
+				on error
+					-- 读取失败，跳过此文件
+				end try
+			end if
+		end repeat
+	on error
+		-- 目录不存在或读取失败，使用默认模板
+		set templateNames to {"1️⃣ TIENDA MOTO ELITE CATIA", "2️⃣ 问候模板", "3️⃣ 感谢模板", "4️⃣ 确认模板", "5️⃣ 结束对话模板", "6️⃣ 自定义模板"}
+		set templateContents to {¬
+			"TIENDA MOTO ELITE CATIA" & return & return & "Horario:" & return & return & "Dia: Lunes a Sabado" & return & return & "Hora: 8:30am a 5:30 pm" & return & return & "Whatsapp: 04242838297" & return & return & "Dirección: A 2 Cuadras de la Estación del Metro Pérez Bonalde, Calle México de Catia, Frente al Colegio Juan Antonio Pérez Bonalde" & return & return & "https://maps.app.goo.gl/Mto6487FwnZkyA8y5?g_st=ic", ¬
+			"👋 您好！" & return & return & "感谢您的咨询，很高兴为您服务。" & return & return & "有什么我可以帮助您的吗？", ¬
+			"🙏 非常感谢您的支持！" & return & return & "我们会尽快处理您的问题。" & return & return & "如有任何疑问，请随时联系我们。", ¬
+			"✅ 已收到您的信息" & return & return & "我们会尽快为您处理。" & return & return & "感谢您的耐心等待！", ¬
+			"感谢您的咨询！😊" & return & return & "如果还有其他问题，随时欢迎联系我们。" & return & return & "祝您生活愉快！", ¬
+			"💬 这是一个自定义模板" & return & return & "您可以在 templates/ 目录中创建 .txt 文件来自定义模板。" & return & return & "文件名将作为模板标题显示。" & return & return & "支持的内容包括：" & return & "- 文本" & return & "- Emoji 表情 😀 🎉 ✨" & return & "- 链接和联系方式" & return & "- 多行文本"}
+	end try
+	
+	-- 如果没有找到任何模板，使用默认模板
+	if (count of templateNames) is 0 then
+		set templateNames to {"1️⃣ TIENDA MOTO ELITE CATIA", "2️⃣ 问候模板", "3️⃣ 感谢模板", "4️⃣ 确认模板", "5️⃣ 结束对话模板", "6️⃣ 自定义模板"}
+		set templateContents to {¬
+			"TIENDA MOTO ELITE CATIA" & return & return & "Horario:" & return & return & "Dia: Lunes a Sabado" & return & return & "Hora: 8:30am a 5:30 pm" & return & return & "Whatsapp: 04242838297" & return & return & "Dirección: A 2 Cuadras de la Estación del Metro Pérez Bonalde, Calle México de Catia, Frente al Colegio Juan Antonio Pérez Bonalde" & return & return & "https://maps.app.goo.gl/Mto6487FwnZkyA8y5?g_st=ic", ¬
+			"👋 您好！" & return & return & "感谢您的咨询，很高兴为您服务。" & return & return & "有什么我可以帮助您的吗？", ¬
+			"🙏 非常感谢您的支持！" & return & return & "我们会尽快处理您的问题。" & return & return & "如有任何疑问，请随时联系我们。", ¬
+			"✅ 已收到您的信息" & return & return & "我们会尽快为您处理。" & return & return & "感谢您的耐心等待！", ¬
+			"感谢您的咨询！😊" & return & return & "如果还有其他问题，随时欢迎联系我们。" & return & return & "祝您生活愉快！", ¬
+			"💬 这是一个自定义模板" & return & return & "您可以在 templates/ 目录中创建 .txt 文件来自定义模板。" & return & return & "文件名将作为模板标题显示。" & return & return & "支持的内容包括：" & return & "- 文本" & return & "- Emoji 表情 😀 🎉 ✨" & return & "- 链接和联系方式" & return & "- 多行文本"}
+	end if
+	
+	return {templateNames:templateNames, templateContents:templateContents}
+end loadAllTemplates
