@@ -15,10 +15,12 @@
 - 自动计算 80% 折扣价（即原价的 20% 折扣）
 - 生成格式化的文本并自动粘贴到当前焦点位置
 
-**快捷键**：`Control + Option + P`
+**使用方式**：
+- 在 Raycast 中配置快捷键后使用（快捷键在 Raycast 中设置，脚本本身不包含快捷键）
+- 或直接在 Raycast 中搜索脚本名称运行
 
 **使用流程**：
-1. 按下快捷键或通过 Raycast 运行脚本
+1. 通过 Raycast 运行脚本（使用配置的快捷键或搜索脚本名称）
 2. 在弹出的对话框中输入原始价格
 3. 脚本自动计算折扣价并粘贴格式化文本
 
@@ -37,10 +39,12 @@ $100 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le qu
 - 如果原始价格有小数，自动向下取整
 - 生成格式化的文本并自动粘贴到当前焦点位置
 
-**快捷键**：`Control + Option + R`
+**使用方式**：
+- 在 Raycast 中配置快捷键后使用（快捷键在 Raycast 中设置，脚本本身不包含快捷键）
+- 或直接在 Raycast 中搜索脚本名称运行
 
 **使用流程**：
-1. 按下快捷键或通过 Raycast 运行脚本
+1. 通过 Raycast 运行脚本（使用配置的快捷键或搜索脚本名称）
 2. 在弹出的对话框中输入折扣后的价格（例如：8）
 3. 脚本自动反推原始价格（例如：8 ÷ 0.8 = 10）并粘贴格式化文本
 
@@ -53,6 +57,20 @@ $10 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le que
 - 输入：折扣后价格（如 8）
 - 计算：原始价格 = 折扣后价格 ÷ 0.8 = 8 ÷ 0.8 = 10
 - 取整：如果原始价格有小数，向下取整（如 10.9 → 10）
+
+## 如何配置快捷键
+
+脚本本身不包含快捷键配置，所有快捷键都需要在 Raycast 中设置：
+
+1. 打开 Raycast（`Command + Space`）
+2. 输入 "Extensions" 或"扩展"
+3. 找到对应的脚本（如 "Calculate & Paste Price" 或 "Reverse Calculate & Paste Price"）
+4. 点击脚本右侧的 "..." 菜单
+5. 选择 "Set Hotkey" 或"设置快捷键"
+6. 按下你想要设置的快捷键组合
+7. 保存设置
+
+配置完成后，你就可以使用设置的快捷键快速运行脚本了。
 
 ## 如何查看 Raycast 脚本日志
 
@@ -177,11 +195,13 @@ osascript -l AppleScript ReverseCalculatePrice.applescript
 ## 更新日志
 
 ### 2024-12-XX（最新）
+- **更新 README 说明**：
+  - 明确说明快捷键在 Raycast 中配置，脚本本身不包含快捷键
+  - 添加了快捷键配置说明章节
 - **新增反向计算脚本 ReverseCalculatePrice.applescript**：
   - 输入折扣后的价格，自动反推原始价格
   - 计算公式：原始价格 = 折扣后价格 ÷ 0.8
   - 如果原始价格有小数，自动向下取整
-  - 快捷键：`Control + Option + R`
   - 生成格式化的文本并自动粘贴
 
 ### 2024-12-XX
