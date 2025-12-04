@@ -126,7 +126,8 @@ $10 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le que
 - 支持 Emoji 表情符号在文件内容中（文件名建议使用统一格式）
 - 文件按文件名排序显示（template_1.txt, template_2.txt...）
 - 支持多行文本、Emoji、链接、联系方式等所有内容
-- **无需重启 Raycast**，脚本每次运行都会重新扫描目录
+- **预览自动刷新**：脚本每次运行都会重新读取文件内容并更新预览，无需重启 Raycast
+- 如果更新了模板文件，下次运行脚本时会自动显示新的预览内容
 - 如果 `templates/` 目录不存在或为空，会使用脚本中的默认模板
 
 ## 如何配置快捷键

@@ -108,8 +108,8 @@ on loadAllTemplates()
 		set scriptFolder to (do shell script "pwd")
 	end try
 	
-	-- templates 子目录路径
-	set templatesFolder to scriptFolder & "templates/"
+	-- templates 子目录路径（使用固定路径，确保总是读取到你项目里的最新模板）
+	set templatesFolder to "/Users/victor/IdeaProjects/Raycast Scripts/templates/"
 	
 	set templateNames to {}
 	set templateContents to {}
@@ -132,9 +132,11 @@ on loadAllTemplates()
 				set templateName to first item of fileNameParts
 				set AppleScript's text item delimiters to ""
 				
-				-- 读取文件内容
+				-- 读取文件内容（每次运行都重新读取，确保获取最新内容）
 				try
-					set fileContent to (read POSIX file templateFile)
+					-- 使用 UTF-8 编码读取文本文件，避免 Emoji / 西文重音出现乱码
+					set fileContent to (read POSIX file templateFile as «class utf8»)
+					
 					if fileContent is not "" then
 						-- 提取第一行内容作为预览（约10个字符）
 						set firstLinePreview to my getFirstLinePreview(fileContent)
@@ -143,21 +145,14 @@ on loadAllTemplates()
 						set end of templateContents to fileContent
 						set end of templatePreviews to firstLinePreview
 					end if
-				on error
-					-- 读取失败，跳过此文件
+				on error errorMsg
+					-- 读取失败，跳过此文件（不添加到列表）
 				end try
 			end if
 		end repeat
-	on error
-		-- 目录不存在或读取失败，使用默认模板
-		set templateNames to {"1️⃣ TIENDA MOTO ELITE CATIA", "2️⃣ 问候模板", "3️⃣ 感谢模板", "4️⃣ 确认模板", "5️⃣ 结束对话模板", "6️⃣ 自定义模板"}
-		set templateContents to {¬
-			"TIENDA MOTO ELITE CATIA" & return & return & "Horario:" & return & return & "Dia: Lunes a Sabado" & return & return & "Hora: 8:30am a 5:30 pm" & return & return & "Whatsapp: 04242838297" & return & return & "Dirección: A 2 Cuadras de la Estación del Metro Pérez Bonalde, Calle México de Catia, Frente al Colegio Juan Antonio Pérez Bonalde" & return & return & "https://maps.app.goo.gl/Mto6487FwnZkyA8y5?g_st=ic", ¬
-			"👋 您好！" & return & return & "感谢您的咨询，很高兴为您服务。" & return & return & "有什么我可以帮助您的吗？", ¬
-			"🙏 非常感谢您的支持！" & return & return & "我们会尽快处理您的问题。" & return & return & "如有任何疑问，请随时联系我们。", ¬
-			"✅ 已收到您的信息" & return & return & "我们会尽快为您处理。" & return & return & "感谢您的耐心等待！", ¬
-			"感谢您的咨询！😊" & return & return & "如果还有其他问题，随时欢迎联系我们。" & return & return & "祝您生活愉快！", ¬
-			"💬 这是一个自定义模板" & return & return & "您可以在 templates/ 目录中创建 .txt 文件来自定义模板。" & return & return & "文件名将作为模板标题显示。" & return & return & "支持的内容包括：" & return & "- 文本" & return & "- Emoji 表情 😀 🎉 ✨" & return & "- 链接和联系方式" & return & "- 多行文本"}
+	on error errorMsg
+		-- 目录不存在或读取失败，不设置默认模板
+		-- 让脚本继续执行，如果文件读取成功，就不会被默认模板覆盖
 	end try
 	
 	-- 如果没有找到任何模板，使用默认模板
@@ -194,14 +189,8 @@ on getFirstLinePreview(fileContent)
 			set firstLine to my trim(firstLine)
 		end if
 		
-		-- 截取约10个字符（考虑中文字符和Emoji）
-		if (length of firstLine) > 12 then
-			set preview to text 1 thru 12 of firstLine & "..."
-		else
-			set preview to firstLine
-		end if
-		
-		return preview
+		-- 直接使用第一行作为预览，避免截断 Emoji 或多字节字符导致乱码
+		return firstLine
 	else
 		return "..."
 	end if
