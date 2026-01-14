@@ -58,6 +58,35 @@ $10 a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le que
 - 计算：原始价格 = 折扣后价格 ÷ 0.8 = 8 ÷ 0.8 = 10
 - 取整：如果原始价格有小数，向下取整（如 10.9 → 10）
 
+### DoubleOriginalFromDiscountedPrice.ahk（Windows / AutoHotkey）
+
+**功能**：输入折后价（USD），自动计算原价（**原价 = 折后价 × 2**），并生成与 AppleScript 脚本风格一致的文本，复制到剪贴板（可选自动粘贴）。
+
+**适用场景**：
+- 你在 Windows 上聊天/报价时，只知道“折后价”，需要快速算出“原价”（等价于 **50% 折扣**）
+- 想要一键生成同款西语话术并直接粘贴
+
+**使用前准备**：
+- 安装 AutoHotkey v2（脚本顶部写了 `#Requires AutoHotkey v2.0`，必须是 v2）
+
+**使用方式**：
+1. 在 Windows 上双击运行 `DoubleOriginalFromDiscountedPrice.ahk`
+2. 在任意输入框里点一下让光标在里面
+3. 按快捷键（默认 **Ctrl + Alt + D**）
+4. 输入“折后价（USD）”，点确定
+5. 脚本会把结果文本复制到剪贴板，并默认自动粘贴（Ctrl+V）
+
+**输出格式示例**（输入折后价 8，会计算原价 16）：
+```
+$16 a BCV, pero si cancela en divisas de le aplica un descuento del 50% y le queda $8 en divisas
+```
+
+**可改配置（打开脚本文件顶部就能看到）**：
+- **HOTKEY**：修改触发快捷键（例如 `^!d` 表示 Ctrl+Alt+D）
+- **AUTO_PASTE**：`true`=自动粘贴，`false`=只复制不粘贴
+- **ROUND_DECIMALS**：显示保留的小数位（常用 0 或 2）
+- **RESTORE_CLIPBOARD**：是否在粘贴后恢复你原来的剪贴板内容
+
 ### QuickReplyTemplates.applescript
 
 **功能**：快速回复模板选择器，支持数字选择模板并自动粘贴

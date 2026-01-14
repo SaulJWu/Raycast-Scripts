@@ -53,9 +53,9 @@ on run
 			return
 		end if
 		
-		-- 反向计算原始价格：折扣后价格 / 0.8
-		-- 因为折扣价 = 原价 * 0.8，所以原价 = 折扣价 / 0.8
-		set originalPrice to discountedPrice / 0.8
+		-- 反向计算原始价格：折扣后价格 / 0.7
+		-- 因为折扣价 = 原价 * 0.7，所以原价 = 折扣价 / 0.7
+		set originalPrice to discountedPrice / 0.7
 		
 		-- 如果原始价格有小数，向下取整
 		set roundedOriginalPrice to round originalPrice rounding down
@@ -67,7 +67,7 @@ on run
 	end try
 	
 	-- 3. 构建完整的文本字符串
-	set outputText to "$" & (roundedOriginalPrice as text) & " a BCV, pero si cancela en divisas de le aplica un descuento del 20% y le queda $" & discountedPriceStr & " en divisas"
+	set outputText to "$" & (roundedOriginalPrice as text) & " a BCV, pero si cancela en divisas se le aplica un descuento del 30% y le queda $" & discountedPriceStr & " en divisas. ¡Promoción por tiempo limitado! Descuento sujeto a cambios sin previo aviso."
 	
 	-- 4. 将最终文本复制到剪贴板
 	set the clipboard to outputText
